@@ -10,12 +10,12 @@ def generate_summary_report():
     print("MOVIE RECOMMENDATION SYSTEM - DATA ANALYSIS REPORT")
     print("="*80)
     
-    # File information
+  
     print(f"\n📁 FILE INFORMATION:")
     print(f"   movie_list.pkl: {os.path.getsize('movie_list.pkl') / 1024 / 1024:.2f} MB")
     print(f"   similarity.pkl: {os.path.getsize('similarity.pkl') / 1024 / 1024:.2f} MB")
     
-    # Load data
+   
     with open('movie_list.pkl', 'rb') as f:
         movie_data = pickle.load(f)
     
@@ -33,7 +33,7 @@ def generate_summary_report():
         print(f"     - Type: {type(value).__name__}")
         print(f"     - Items: {len(value)}")
         if key == 'tags':
-            # Calculate average tags per movie
+         
             tag_counts = [len(tags) for tags in value.values()]
             avg_tags = np.mean(tag_counts)
             print(f"     - Average tags per movie: {avg_tags:.1f}")
@@ -48,7 +48,7 @@ def generate_summary_report():
     print(f"   Diagonal values: All 1.0 (self-similarity)")
     
     print(f"\n📈 SIMILARITY STATISTICS:")
-    # Exclude diagonal for statistics
+
     non_diagonal = similarity_matrix.copy()
     np.fill_diagonal(non_diagonal, 0)
     
@@ -58,7 +58,7 @@ def generate_summary_report():
     print(f"   Median similarity: {np.median(non_diagonal):.6f}")
     print(f"   Std deviation: {np.std(non_diagonal):.6f}")
     
-    # Find top similar movies
+   
     print(f"\n🏆 TOP 5 MOST SIMILAR MOVIE PAIRS:")
     top_indices = np.argsort(non_diagonal.flatten())[-5:][::-1]
     
@@ -74,7 +74,7 @@ def generate_summary_report():
         print(f"      Similarity: {similarity_score:.4f}")
         print()
     
-    # Sample movies
+   
     print(f"\n🎭 SAMPLE MOVIES IN DATASET:")
     sample_indices = [0, 100, 500, 1000, 1493]
     for idx in sample_indices:
