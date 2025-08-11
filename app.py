@@ -14,14 +14,14 @@ def load_data():
     with open('similarity.pkl', 'rb') as f:
         similarity_matrix = pickle.load(f)
 
-    # Build ordered lists aligned to similarity matrix indices
+   
     num_movies = similarity_matrix.shape[0]
     titles_dict = movie_data['title']
 
-    # Ensure order by index 0..N-1
+    
     titles: List[str] = [titles_dict[i] for i in range(num_movies)]
 
-    # Map title -> list of indices (handle duplicates)
+   
     title_to_indices = {}
     for idx, title in enumerate(titles):
         title_to_indices.setdefault(title, []).append(idx)
@@ -53,7 +53,7 @@ def fetch_poster_url(title: str, api_key: str) -> str | None:
 
 def get_recommendations(selected_index: int, similarity_matrix: np.ndarray, titles: List[str], top_k: int = 10) -> List[Tuple[str, float, int]]:
     scores = similarity_matrix[selected_index]
-    # Get indices sorted by score descending
+    
     sorted_indices = np.argsort(scores)[::-1]
 
     recommendations: List[Tuple[str, float, int]] = []
@@ -70,14 +70,14 @@ def main():
     st.title("🎬 Movie Recommendation")
     st.caption("Pick a movie to see similar movies, with posters fetched from OMDb.")
 
-    # Sidebar config: try Streamlit secrets, then env var, then default
-    default_key = "a42bd021"  # Default fallback
+  
+    default_key = "a42bd021" 
     try:
-        # Try to get from Streamlit secrets (works in deployed environment)
+        
         if hasattr(st, 'secrets') and st.secrets:
             default_key = st.secrets.get("OMDB_API_KEY", default_key)
     except Exception:
-        # Fallback to environment variable
+       
         default_key = os.getenv("OMDB_API_KEY", default_key)
 
     api_key = st.sidebar.text_input("OMDb API Key", value=default_key, type="password")
@@ -89,10 +89,10 @@ def main():
         st.error(f"Failed to load data: {e}")
         st.stop()
 
-    # UI: select a movie title
+  
     selected_title = st.selectbox("Choose a movie", options=titles, index=0)
 
-    # If there are duplicates, allow the user to choose which instance (by index)
+   
     candidate_indices = title_to_indices.get(selected_title, [])
     selected_index = candidate_indices[0] if candidate_indices else 0
     if len(candidate_indices) > 1:
@@ -110,7 +110,7 @@ def main():
         st.subheader("Similar movies")
         st.write(f"Based on: {selected_title}")
 
-        # Display as a responsive grid with posters
+       
         num_cols = 5 if top_k >= 10 else 3
         cols = st.columns(num_cols)
         for i, (title, score, idx) in enumerate(recs):
@@ -122,7 +122,7 @@ def main():
                 st.markdown(f"**{title}**")
                 st.caption(f"Similarity: {score:.3f}")
 
-        # Optional: show a table as well
+        
         with st.expander("Show as table"):
             st.dataframe(
                 {
@@ -133,7 +133,7 @@ def main():
                 hide_index=True,
             )
 
-        # Optional: show tags for the selected movie
+       
         with st.expander("Show tags for selected movie"):
             tags_dict = movie_data.get('tags', {})
             if selected_index in tags_dict:
